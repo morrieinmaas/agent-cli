@@ -59,6 +59,21 @@ impl Configuration {
         )?;
         Ok(())
     }
+
+    pub fn remove(environment: String) -> Result<()> {
+        let path = get_config_path()?;
+        let mut current_configuration =
+            get_config_from_path(&path).map_err(|_| Error::EmptyConfiguration)?;
+        current_configuration
+            .configurations
+            .remove(&environment)
+            .ok_or(Error::InvalidEnvironment(environment))?;
+        fs::write(
+            path,
+            serde_yaml::to_string(&current_configuration)?.as_bytes(),
+        )?;
+        Ok(())
+    }
 }
 
 pub fn get_config_from_path(config_path: &Path) -> Result<Configuration> {
@@ -71,13 +86,13 @@ pub fn get_config_from_path(config_path: &Path) -> Result<Configuration> {
 pub fn get_config_path() -> Result<PathBuf> {
     if cfg!(windows) {
         let home = "C:\\Program Files\\Common Files";
-        Ok(Path::new(home).join("aries-cli\\config.yaml"))
+        Ok(Path::new(home).join("agent-cli\\config.yaml"))
     } else if cfg!(unix) {
         let home = match std::env::var("HOME") {
             Ok(h) => Ok(h),
             Err(_) => Err(Error::HomeNotFound),
         };
-        Ok(Path::new(&home?).join(".config/aries-cli/config.yaml"))
+        Ok(Path::new(&home?).join(".config/agent-cli/config.yaml"))
     } else {
         Err(Error::OsUnknown.into())
     }

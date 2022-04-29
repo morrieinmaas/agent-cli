@@ -16,6 +16,8 @@ pub enum HelpStrings {
     // Configuration
     Configuration,
     ConfigurationAdd,
+    ConfigurationRemove,
+    ConfigurationRemoveEnvironment,
     ConfigurationAddDefault,
     ConfigurationView,
     ConfigurationInitializeToken,
@@ -31,6 +33,13 @@ pub enum HelpStrings {
     ConnectionsInviteToolbox,
     ConnectionsList,
     ConnectionsListId,
+    ConnectionsListAlias,
+    ConnectionsListConnectionProtocol,
+    ConnectionsListInvitationKey,
+    ConnectionsListMyDid,
+    ConnectionsListState,
+    ConnectionsListTheirDid,
+    ConnectionsListTheirRole,
     ConnectionsReceive,
     ConnectionsReceiveUrl,
 
@@ -39,6 +48,9 @@ pub enum HelpStrings {
     CredentialDefinitionId,
     CredentialDefinitionCreate,
     CredentialDefinitionCreateSchemaId,
+    CredentialDefinitionCreateTag,
+    CredentialDefinitionCreateSupportRevocation,
+    CredentialDefinitionCreateRevocationRegistrySize,
     CredentialDefinitionList,
 
     // Credentials
@@ -76,13 +88,13 @@ pub enum HelpStrings {
     ProofRequestAttribute,
     ProofRequestConnectionId,
 
-    // Workflow
-    Workflow,
-    WorkflowCredentialOffer,
-    WorkflowCredentialOfferConnectionId,
-    WorkflowCredentialOfferNoQr,
-    WorkflowCredentialOfferSelf,
-    WorkflowCredentialOfferTimeout,
+    // Automate
+    Automation,
+    AutomationCredentialOffer,
+    AutomationCredentialOfferConnectionId,
+    AutomationCredentialOfferNoQr,
+    AutomationCredentialOfferSelf,
+    AutomationCredentialOfferTimeout,
 }
 
 impl From<HelpStrings> for Option<&str> {
@@ -103,8 +115,10 @@ impl HelpStrings {
             HelpStrings::Config => "Supply a path to your configuration file to use that instead of the default",
             HelpStrings::Environment => "Specify your current environment",
 
-            HelpStrings::Configuration => "Add agents to your configuration or view your current configuration. To quickly get started run the following command: aries-cli configuration add --default",
+            HelpStrings::Configuration => "Add agents to your configuration or view your current configuration. To quickly get started run the following command: agent-cli configuration add --default",
             HelpStrings::ConfigurationAdd => "Add a new, or overwrite an existing, agent your configuration file",
+            HelpStrings::ConfigurationRemove => "PERMANENTLY remove an agent from your configuration",
+            HelpStrings::ConfigurationRemoveEnvironment => "Environment to delete",
             HelpStrings::ConfigurationAddDefault => {
                 "Add the default agent to the configuration (can be combined with --token)"
             }
@@ -126,6 +140,13 @@ impl HelpStrings {
             HelpStrings::ConnectionsInviteToolbox => HELP_STRING_CONNECTIONS_INVITE_TOOLBOX,
             HelpStrings::ConnectionsList => "List all your current connections",
             HelpStrings::ConnectionsListId => "Get a connection by id",
+            HelpStrings::ConnectionsListAlias => "Filter connections on the `alias` property",
+            HelpStrings::ConnectionsListConnectionProtocol => "Filter connections on the `connection_protocol` property",
+            HelpStrings::ConnectionsListInvitationKey => "Filter connections on the `invitation_key` property",
+            HelpStrings::ConnectionsListMyDid => "Filter connections on the `my_did` property",
+            HelpStrings::ConnectionsListState => "Filter connections on the `state` property",
+            HelpStrings::ConnectionsListTheirDid => "Filter connections on the `their_did` property",
+            HelpStrings::ConnectionsListTheirRole => "Filter connections on the `their_role` property",
             HelpStrings::ConnectionsReceive => "Receive an invitation via url",
             HelpStrings::ConnectionsReceiveUrl => "The url that contains the invitation, surrounded by quotes",
 
@@ -133,6 +154,9 @@ impl HelpStrings {
             HelpStrings::CredentialDefinitionId => "ID of a credential definition to retrieve",
             HelpStrings::CredentialDefinitionCreate => "Create a new credential definition",
             HelpStrings::CredentialDefinitionCreateSchemaId => "Schema ID to use in the definition",
+            HelpStrings::CredentialDefinitionCreateTag => "Tag for the credential definition",
+            HelpStrings::CredentialDefinitionCreateSupportRevocation => "Whether the credential definition should support revocation",
+            HelpStrings::CredentialDefinitionCreateRevocationRegistrySize => "The size of the revocation registry",
             HelpStrings::CredentialDefinitionList => "List all your credential definitions",
 
             HelpStrings::Credentials => "Issue Credential V1",
@@ -169,12 +193,12 @@ impl HelpStrings {
             HelpStrings::ProofRequestPredicate => "Predicates required in the proof request (format = name,operator,value). e.g. -p=\"age,>=,18\"",
             HelpStrings::ProofRequestConnectionId => "Connection id to send the proof request to",
 
-            HelpStrings::Workflow => "Automated actions that combine multiple functions",
-            HelpStrings::WorkflowCredentialOffer => "Simple credential offer automation to offer a premade credential to any agent",
-            HelpStrings::WorkflowCredentialOfferConnectionId => "Connection id of the receiving party",
-            HelpStrings::WorkflowCredentialOfferNoQr => "Disables printing the qr code",
-            HelpStrings::WorkflowCredentialOfferSelf => "Completes the entire flow with itself",
-            HelpStrings::WorkflowCredentialOfferTimeout=> "Timeout for the entire flow in seconds",
+            HelpStrings::Automation => "Run a set of actions against the agent",
+            HelpStrings::AutomationCredentialOffer => "Offer a premade credential to an agent",
+            HelpStrings::AutomationCredentialOfferConnectionId => "Connection id of the receiving party",
+            HelpStrings::AutomationCredentialOfferNoQr => "Do not show a QR code",
+            HelpStrings::AutomationCredentialOfferSelf => "Offer a credential to self",
+            HelpStrings::AutomationCredentialOfferTimeout=> "Timeout in seconds",
         }
     }
 }
@@ -187,24 +211,24 @@ const HELP_STRING_CONNECTIONS_INVITE_TOOLBOX: &str =
     and gives admin rights over the invitation to the toolbox";
 
 const HELP_STRING_CLI: &str = "
---- Aries cli ---
+--- Agent cli ---
 
-To begin working with the aries-cli, run the following command:
+To begin working with the agent-cli, run the following command:
 
-    $ aries-cli configuration add --default
+    $ agent-cli configuration add --default
 
 This command will initialize the configuration file and makes sure
 that you do not have to pass the --agent-url argument with every call.
 
 Some example commands are the following:
 
-    $ aries-cli connection list
+    $ agent-cli connection list
         - fetches all the connections (jq compatible)
-    $ aries-cli connection invite --qr
+    $ agent-cli connection invite --qr
         - create an invitation (as a qr code)
-    $ aries-cli features
+    $ agent-cli features
         - Fetches all the features of the cloudagent
-    $ aries-cli schema create --name FOO -a BAR -a BAZ
+    $ agent-cli schema create --name FOO -a BAR -a BAZ
         - Create a new schema with the name as 'FOO' and the attributes as 'BAR' and 'BAZ'
 
 -----------------

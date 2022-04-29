@@ -4,7 +4,7 @@ use clap::{Parser, Subcommand};
 
 use crate::help_strings::HelpStrings;
 
-use crate::modules::workflow::WorkflowOptions;
+use crate::modules::automation::AutomationOptions;
 use crate::modules::{
     configuration::ConfigurationOptions, connection::ConnectionOptions,
     credential::CredentialOptions, credential_definition::CredentialDefinitionOptions,
@@ -12,7 +12,7 @@ use crate::modules::{
 };
 
 #[derive(Parser)]
-#[clap(name = "aries-cli", author, version, about = HelpStrings::Cli)]
+#[clap(name = "agent-cli", author, version, about = HelpStrings::Cli)]
 #[clap(arg_required_else_help = true, disable_help_subcommand = true)]
 pub struct Cli {
     #[clap(long, short='u', help = HelpStrings::AgentURL)]
@@ -52,6 +52,6 @@ pub enum Commands {
     Message(MessageOptions),
     Credential(CredentialOptions),
     Configuration(ConfigurationOptions),
-    Automate(WorkflowOptions),
+    Automate(AutomationOptions),
     Proof(ProofOptions),
 }
