@@ -46,10 +46,10 @@ jobs:
           touch ~/.ssh/known_hosts
           touch ~/.ssh/authorized_keys
           # Set all the permissions for ssh
-          sudo chmod 400 /home/runner/.ssh/aur
-          sudo chmod 700 /home/runner/.ssh
-          sudo chmod 600 /home/runner/.ssh/authorized_keys
-          sudo chmod 600 /home/runner/.ssh/known_hosts
+          chmod 400 /home/runner/.ssh/aur
+          chmod 700 /home/runner/.ssh
+          chmod 600 /home/runner/.ssh/authorized_keys
+          chmod 600 /home/runner/.ssh/known_hosts
           # write key from secret to file
           echo "$AUR_KEY" | base64 -d  > ~/.ssh/aur
           # tell ssh which key to use via config
